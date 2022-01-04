@@ -64,3 +64,35 @@ dist
 ```
 
 Feita essa alteração, vamos agora commitar a alteração com `git c "chore: add typescript"`
+
+### Padrão de código
+
+Podemos utilizar um padrão de código, para garantir que a formatação ocorra de forma correta. Visando solucionar esse problema, temos o [JavaScript Standard Style](https://standardjs.com/).
+
+Essa lib é voltada para JS, para contornar esse problema, podemos usar o `ESLint` para configurar o StandardJS pelo [link do GitHub](https://github.com/standard/eslint-config-standard-with-typescript).
+
+Depois de instaladas as libs, vamos criar um arquivo `.eslintrc.json`:
+```JSON
+{
+    "extends": "standard-with-typescript",
+    "rules": {
+        "semi": [2, "always"]
+    },
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    }
+}
+```
+
+1. Vamos utilizar o `extends` para capturar todas as regras de código do package StandardJS
+2. O `parseOptions` vamos atribuir o arquivo `tsconfig.json` que criamos
+3. Como opcional, eu atribuo em `rules` a obrigatoreidade do uso do ponto e vírgula
+
+
+Vamos criar um arquivo `.eslintignore`:
+```
+node_modules
+dist
+```
+
+Por fim, comitamos a alteração com `git c "chore: add eslint"`

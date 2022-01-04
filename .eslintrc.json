@@ -1,0 +1,9 @@
+{
+    "extends": "standard-with-typescript",
+    "rules": {
+        "semi": [2, "always"]
+    },
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    }
+}
