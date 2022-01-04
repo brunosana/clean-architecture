@@ -96,3 +96,40 @@ dist
 ```
 
 Por fim, comitamos a alteração com `git c "chore: add eslint"`
+
+### Husky e Lint Staged
+
+Para garantir que todo código que seja adicionado ao Git ou Github esteja correspondendo aos padrões que definimos, podemos usar o [Husky](https://www.npmjs.com/package/husky) para criar uma ponte entre o arquivo e o commit que faça algumas verificações.
+
+Vamos instalar com `npm i -D husky`.
+
+Como vamos utilizar o ESLint para formatar sempre antes de cada commit, podemos ter um gargalo na performance quando estivermos trabalhado com muitos arquivos. Para resolver esse problema, vamos utilizar uma lib que garante que a verificação aconteça apenas nos arquivos que estivermos adicionando ao commit. O nome da lib é `lint-staged`.
+
+Vamos instalar com `npm i -D lint-staged`
+
+Vamos então criar um arquivo de configuração `.lintstagedrc.json`:
+```JSON
+{
+    "*.ts": [
+        "eslint 'src/**' --fix",
+        "git add"
+    ]
+}
+```
+
+Isso garante que vamos pegar todos os arquivos modificados, vamos verificar se está de acordo, e com a flag `fix` o eslint irá tentar consertar. Caso ele consiga, é executado o comando `git add` para adicionar o arquivo novamente com a alteração. Quando ocorre um erro, o commit não irá acontecer.
+
+
+Agora podemos criar o arquivo `.huskyrc.json`:
+```JSON
+{
+    "hooks": {
+        "pre-commit": "lint-staged"
+    }
+}
+```
+
+Criamos assim, um pré commit para garantir a formatação do código no repositório.
+
+
+Por fim, comitamos a alteração com `git c "chore: add husky and lint staged"` 
