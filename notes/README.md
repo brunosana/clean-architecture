@@ -15,3 +15,5 @@ Podemos agora comitar as alterações:
 
 
 Podemos também utilizar uma lib que garante que os nossos commits vão sempre pertencer a esse padrão, checando de forma automática, a lib é a [git-commit-msg-linter](https://www.npmjs.com/package/git-commit-msg-linter).
+
+2. Vamos instalar a lib então com `npm install -D git-commit-msg-linter`
