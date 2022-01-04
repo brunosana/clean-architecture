@@ -103,6 +103,8 @@ Para garantir que todo código que seja adicionado ao Git ou Github esteja corre
 
 Vamos instalar com `npm i -D husky`.
 
+Vamos iniciar o husky com `npx husky install`, irá criar a pasta `.husky`
+
 Como vamos utilizar o ESLint para formatar sempre antes de cada commit, podemos ter um gargalo na performance quando estivermos trabalhado com muitos arquivos. Para resolver esse problema, vamos utilizar uma lib que garante que a verificação aconteça apenas nos arquivos que estivermos adicionando ao commit. O nome da lib é `lint-staged`.
 
 Vamos instalar com `npm i -D lint-staged`
@@ -119,17 +121,17 @@ Vamos então criar um arquivo de configuração `.lintstagedrc.json`:
 
 Isso garante que vamos pegar todos os arquivos modificados, vamos verificar se está de acordo, e com a flag `fix` o eslint irá tentar consertar. Caso ele consiga, é executado o comando `git add` para adicionar o arquivo novamente com a alteração. Quando ocorre um erro, o commit não irá acontecer.
 
+Vamos usar o comando `npx husky add .husky/pre-commit "npm run lint-staged"`. para atribuir ao Husky o hook de pré commit chamando o `lint-staged`
 
-Agora podemos criar o arquivo `.huskyrc.json`:
-```JSON
-{
-    "hooks": {
-        "pre-commit": "lint-staged"
-    }
-}
+Se você usa o git-commit-msg-linter, podemos integrar com o husky inserindo `npx husky add .husky/commit-msg ".git/hooks/commit-msg $1"` no terminal.
+
+Após isso, vamos alterar o arquivo `.husky/commit-msg`:
 ```
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
-Criamos assim, um pré commit para garantir a formatação do código no repositório.
+.git/hooks/commit-msg S1
+```
 
 
 Por fim, comitamos a alteração com `git c "chore: add husky and lint staged"` 
