@@ -76,7 +76,9 @@ Depois de instaladas as libs, vamos criar um arquivo `.eslintrc.json`:
 {
     "extends": "standard-with-typescript",
     "rules": {
-        "semi": [2, "always"]
+        "semi": "off",
+        "@typescript-eslint/semi": ["error", "always"],
+        "comma-dangle": ["error", "always-multiline"]
     },
     "parserOptions": {
         "project": "./tsconfig.json"
@@ -86,7 +88,7 @@ Depois de instaladas as libs, vamos criar um arquivo `.eslintrc.json`:
 
 1. Vamos utilizar o `extends` para capturar todas as regras de código do package StandardJS
 2. O `parseOptions` vamos atribuir o arquivo `tsconfig.json` que criamos
-3. Como opcional, eu atribuo em `rules` a obrigatoreidade do uso do ponto e vírgula
+3. Como opcional, eu atribuo em `rules` a obrigatoreidade do uso do ponto e vírgula e o uso da vírgula em objetos multi linhas
 
 
 Vamos criar um arquivo `.eslintignore`:
@@ -134,4 +136,40 @@ Após isso, vamos alterar o arquivo `.husky/commit-msg`:
 ```
 
 
-Por fim, comitamos a alteração com `git c "chore: add husky and lint staged"` 
+Por fim, comitamos a alteração com `git c "chore: add husky and lint staged"`
+
+
+### Jest
+
+Precisamos de uma lib para testar as funcionalidades.
+
+Vamos começar com `npm i -D jest @types/jest ts-jest`, para instalar o jest e as dependências necessárias para construir testes com arquivos .ts.
+
+Vamos iniciar a configuração do jest com `jest --init`:
+
+1. Sim para alterar o script do `package.json`
+2. Node para escolher o ambiente de testes enquanto os testes forem feitos
+3. Sim, adicionar o Coverage Reports, para controlar os arquivos que estão ou não cobertos por testes
+4. Não, não vamos limpar as chamadas mockadas entre testes
+
+Com isso, temos um arquivo `jest.config.js`. Vamos formatar ele e deixar dessa forma:
+
+```js
+module.exports = {
+  roots: ['<rootDir>/src'],
+
+  collectCoverage: true,
+
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+  coverageDirectory: 'coverage',
+  coverageProvider: 'v8',
+
+  transform: {
+    '.+\\.ts$': 'ts-jest',
+  },
+};
+```
+
+Definimos essas propriedades, em especial a `transform`, que vamos mapear os arquivos `.ts` para utilizar a lib `ts-jest` para que os nossos testes funcionem.
+
+Por fim, comitamos a alteração com `git c "chore: add jest"`
