@@ -115,15 +115,20 @@ Vamos então criar um arquivo de configuração `.lintstagedrc.json`:
 ```JSON
 {
     "*.ts": [
-        "eslint 'src/**' --fix",
-        "git add"
+        "eslint 'src/**' --fix"
     ]
 }
 ```
 
 Isso garante que vamos pegar todos os arquivos modificados, vamos verificar se está de acordo, e com a flag `fix` o eslint irá tentar consertar. Caso ele consiga, é executado o comando `git add` para adicionar o arquivo novamente com a alteração. Quando ocorre um erro, o commit não irá acontecer.
 
-Vamos usar o comando `npx husky add .husky/pre-commit "npm run lint-staged"`. para atribuir ao Husky o hook de pré commit chamando o `lint-staged`
+Vamos usar o comando `npx husky add .husky/pre-commit "npm run pre-commit"`. para atribuir ao Husky o hook de pré commit chamando o `lint-staged`. Para isso, vamos criar um script em `package.json`:
+```JSON
+  "scripts": {
+    "pre-commit": "lint-staged"
+  },
+```
+
 
 Se você usa o git-commit-msg-linter, podemos integrar com o husky inserindo `npx husky add .husky/commit-msg ".git/hooks/commit-msg $1"` no terminal.
 
