@@ -1,5 +1,9 @@
 ## Iniciando uma API Clean Architecture
 
+### Git Alias
+
+Para criar atalhos de comando no github (que é utilizado nesse documento), recomendo a leitura do arquivo [git.md](./git.md)
+
 ### Configurando GIT e NPM
 
 1. Iniciamos um repositório git com `git init` no terminal
@@ -178,3 +182,7 @@ module.exports = {
 Definimos essas propriedades, em especial a `transform`, que vamos mapear os arquivos `.ts` para utilizar a lib `ts-jest` para que os nossos testes funcionem.
 
 Por fim, comitamos a alteração com `git c "chore: add jest"`
+
+---
+
+Agora, o próximo passo é a leitura do arquivo [tdd.md](./tdd.md)
