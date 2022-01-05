@@ -119,7 +119,7 @@ Vamos então criar um arquivo de configuração `.lintstagedrc.json`:
 ```JSON
 {
     "*.ts": [
-        "eslint 'src/**' --fix"
+        "eslint './src/**' --fix"
     ]
 }
 ```
