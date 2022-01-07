@@ -162,7 +162,6 @@ Agora, que estamos na vibe de abstrair métodos e propriedades evitando código 
 Antes de criar, vamos inserir uma propriedade nas _rules_ do arquivo `eslintrc.json`:
 ```JSON
 "rules": {
-    // [...]
     "@typescript-eslint/method-signature-style": 0
 }
 ```
@@ -184,4 +183,4 @@ export { Controller };
 
 Isso garante que todo Controller irá implementar essa interface, e todo Controller terá um método `handle` que irá receber um objeto do tipo `HttpRequest` e irá retornar um `HttpResponse`.
 
-Feito isso, podemos commitar com `git c ""`
+Feito isso, podemos commitar com `git c "refactor: make SignUpController conforms to a protocol"`
