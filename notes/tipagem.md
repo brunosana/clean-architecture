@@ -151,3 +151,5 @@ for (const field of requiredFields) {
 ```
 
 Assim, para cada parâmetro obrigatório, basta apenas inserir no array `requiredFields`.
+
+Podemos commitar agora com `git c "refactor: simplify code to check Bad Requests"`
