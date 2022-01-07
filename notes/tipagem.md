@@ -102,3 +102,29 @@ Assim o código fica mais legível e mais consistente. Como mudamos uma parte da
 ```Typescript
 expect(httpResponse.body).toEqual(new MissingParamError('<Parametro>'));
 ```
+---
+Há ainda, uma outra forma de melhorar a consistência e clareza do código. Perceba que quando temos um erro de falta de parâmetro, ele pode ser configurado como uma `Bad Request`, ocasionando no _statusCode_ do Erro sempre ser _400_. Identificamos um padrão que pode ser repetido várias vezes.
+
+Com isso, nós podemos criar um _helper_ para o http e encapsular esses tipos de retorno.
+
+Crie um arquivo em `./src/presentation/helpers/http-helper.ts`:
+```Typescript
+import { HttpResponse } from '../protocols/http';
+
+const badRequest = (error: Error): HttpResponse => ({
+  statusCode: 400,
+  body: error,
+});
+
+export { badRequest };
+```
+
+Isso significa que, sempre que tivermos uma Bad Request, podemos invocar apenas o médoto `badRequest` que ele se encarregará, tanto de atribuir o status code, como atribuir o erro no _body_.
+
+Podemos refatorar os trechos onde ocorre o retorno de uma bad request para:
+```Typescript
+if (!httpRequest.body.<Parametro>) {
+    return badRequest(new MissingParamError('<Parametro>'));
+}
+```
+
