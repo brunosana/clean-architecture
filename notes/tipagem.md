@@ -153,3 +153,35 @@ for (const field of requiredFields) {
 Assim, para cada parâmetro obrigatório, basta apenas inserir no array `requiredFields`.
 
 Podemos commitar agora com `git c "refactor: simplify code to check Bad Requests"`
+
+
+### Implementação de Classes Controllers
+
+Agora, que estamos na vibe de abstrair métodos e propriedades evitando código duplicado e tipando objetos, vamos também começar a tipar as nossas classes.
+
+Antes de criar, vamos inserir uma propriedade nas _rules_ do arquivo `eslintrc.json`:
+```JSON
+"rules": {
+    // [...]
+    "@typescript-eslint/method-signature-style": 0
+}
+```
+
+Isso garante que a sintaxe de funções que vamos construir fique mais clean.
+
+---
+
+Durante o desenvolvimento do sistema, nós iremos ter várias classes, e para isso, vamos criar uma interface em `./src/presentation/protocols/controller.ts`:
+```Typescript
+import { HttpRequest, HttpResponse } from './http';
+
+interface Controller {
+  handle (httpRequest: HttpRequest): HttpResponse;
+}
+
+export { Controller };
+```
+
+Isso garante que todo Controller irá implementar essa interface, e todo Controller terá um método `handle` que irá receber um objeto do tipo `HttpRequest` e irá retornar um `HttpResponse`.
+
+Feito isso, podemos commitar com `git c ""`
