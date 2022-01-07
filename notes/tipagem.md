@@ -1,4 +1,4 @@
-### Tipagem e Errors
+## Tipagem e Errors
 
 Não é uma boa prática manter objetos do tipo `any` no seu código, pois não fornece as garantias necessárias para uma boa arquitetura e desenvolvimento. Portanto, todo objeto deve ser tipado!
 
@@ -68,3 +68,37 @@ export { SignUpController };
 ```
 
 Dessa forma, temos a entrada e a saída tipadas.
+
+
+### Erros
+
+Não é uma boa prática retornar erros genéricos (Error) em qualquer lugar da aplicação. Para suprir essa necessidade, podemos criar classes para tipos específicos de erros, para melhorar a consistência, confiabilidade e clareza no código.
+
+Portanto, vamos criar um tipo de erro para a falta de um parâmetro no sistema, o `MissingParamError`.
+
+Crie um arquivo em `./src/presentation/errors/missing-param-error.ts`:
+```Typescript
+class MissingParamError extends Error {
+  constructor (paramName: string) {
+    super(`Missing param: ${paramName}`);
+    this.name = 'MissingParamError';
+  }
+}
+
+export { MissingParamError };
+```
+
+Você pode ver que temos um erro específico, que recebe o parâmetro que falta e constrói um _Error_ com a propriedade _name_ setada como o nome do Erro.
+
+Agora, em `signup.ts`, todos os retornos envolvendo a falta de parâmetros nós fazemos dessa forma:
+```Typescript
+return {
+    statusCode: 400,
+    body: new MissingParamError('<Parametro>'),
+};
+```
+
+Assim o código fica mais legível e mais consistente. Como mudamos uma parte da funcionalidade do controller, precisamos alterar o nosso arquivo de testes também. Em `signup.spec.ts`, em todas as linhas onde se espera um _Error_ por falta de parâmetro, vamos substituir por:
+```Typescript
+expect(httpResponse.body).toEqual(new MissingParamError('<Parametro>'));
+```
