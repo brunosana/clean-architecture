@@ -69,6 +69,8 @@ export { SignUpController };
 
 Dessa forma, temos a entrada e a saída tipadas.
 
+Podemos commitar agora com `git c "refactor: ensure SignUpController.handle implement correct interfaces"`
+
 
 ### Erros
 
@@ -102,6 +104,9 @@ Assim o código fica mais legível e mais consistente. Como mudamos uma parte da
 ```Typescript
 expect(httpResponse.body).toEqual(new MissingParamError('<Parametro>'));
 ```
+
+Podemos commitar agora com `git c "refactor: add customized error for missing param"`
+
 ---
 Há ainda, uma outra forma de melhorar a consistência e clareza do código. Perceba que quando temos um erro de falta de parâmetro, ele pode ser configurado como uma `Bad Request`, ocasionando no _statusCode_ do Erro sempre ser _400_. Identificamos um padrão que pode ser repetido várias vezes.
 
@@ -128,3 +133,21 @@ if (!httpRequest.body.<Parametro>) {
 }
 ```
 
+Podemos commitar agora com `git c "refactor: move duplicated code to a helper method"`
+
+
+### Refatorando os vários IFs
+
+Perceba que, para cada propriedade obrigatória que temos no body de uma requisição, teremos que montar um `if`. Isso irá se repetir várias vezes e podemos melhorar a escrita do código para escrever menos e deixar mais automático.
+
+Portanto, **em `signup.ts`, remova todos os `ifs` da estrutura e substitua por**:
+```Typescript
+const requiredFields = ['name', 'email'];
+
+for (const field of requiredFields) {
+    if (!httpRequest.body[field])
+        return badRequest(new MissingParamError(field));
+}
+```
+
+Assim, para cada parâmetro obrigatório, basta apenas inserir no array `requiredFields`.
