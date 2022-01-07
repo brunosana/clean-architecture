@@ -78,3 +78,5 @@ Adicionamos agora o arquivo `signup.spec.ts` e commitamos:
 ```bash
 git commit -m "test: ensure SignUpController returns 400 if no name is provided"
 ```
+
+Próximo tópico: [Tipagem.md](./tipagem.md)
