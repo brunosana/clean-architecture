@@ -184,3 +184,5 @@ export { Controller };
 Isso garante que todo Controller irá implementar essa interface, e todo Controller terá um método `handle` que irá receber um objeto do tipo `HttpRequest` e irá retornar um `HttpResponse`.
 
 Feito isso, podemos commitar com `git c "refactor: make SignUpController conforms to a protocol"`
+
+Próxima leitura: [dependencias-e-mocks.md](./dependencias-e-mocks.md)
