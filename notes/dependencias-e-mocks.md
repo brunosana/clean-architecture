@@ -127,3 +127,25 @@ export { SignUpController };
 2. Após a verificação dos dados em `requiredFields`, invocamos o método `isValid` e atribuímos o seu retorno à variável `emailIsValid`.
 3. Caso não seja válido, retornamos uma `badRequest` passando um `InvalidParamError`.
 
+Podemos commitar com ` git commit -m "feat: ensure SignUpController returns 400 if an invalid email is provided"`
+
+### Mockando Erros
+
+Se repararmos bem, o método que valida o email, ele precisa, por obrigação, receber **APENAS O EMAIL** como propriedade, então vamos elaborar um teste para garantir que o argumento passado para a função `isValid` será o email:
+```Typescript
+test('Should call EmailValidator with correct email', () => {
+  const { sut, emailValidatorStub } = makeSut();
+  const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid');
+
+  const httpRequest = {
+    body: {
+      name: 'any_name',
+      password: 'passhere',
+      passwordConfirmation: 'passhere',
+      email: 'email@mail.com',
+    },
+  };
+  sut.handle(httpRequest);
+  expect(isValidSpy).toHaveBeenCalledWith('email@mail.com');
+});
+```
