@@ -234,3 +234,5 @@ export { SignUpController };
 ```
 
 Podemos fazer o commit com `git commit -m "feat:ensure SignUpController returns 500 if EmailValidator throws`.
+
+Próxima leitura: [Melhorando Exports](./melhorando-exports.md)
