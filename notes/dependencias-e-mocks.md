@@ -129,7 +129,7 @@ export { SignUpController };
 
 Podemos commitar com ` git commit -m "feat: ensure SignUpController returns 400 if an invalid email is provided"`
 
-### Mockando Erros
+### Mockando Validações e Erros
 
 Se repararmos bem, o método que valida o email, ele precisa, por obrigação, receber **APENAS O EMAIL** como propriedade, então vamos elaborar um teste para garantir que o argumento passado para a função `isValid` será o email:
 ```Typescript
@@ -149,3 +149,88 @@ test('Should call EmailValidator with correct email', () => {
   expect(isValidSpy).toHaveBeenCalledWith('email@mail.com');
 });
 ```
+
+Por outro lado, dentro do `EmailValidator` é possível, também, que algum erro ocorra e ele lance uma exceção.
+
+E quando uma exceção é lançada, não é interessante que o client receba os detalhes dela, pois é um erro inexperado. O que devemos fazer nessas situações é, sempre que uma exceção desconhecida é lançada, nós retornamos um erro genérico ao client.
+
+Vamos chamar esse erro de **Server Error**. Para isso, crie um arquivo `./src/presentation/errors/server-error.ts`:
+```Typescript
+class ServerError extends Error {
+  constructor () {
+    super('Internal Server Error');
+    this.name = 'ServerError';
+  }
+}
+
+export { ServerError };
+```
+
+Perceba que não precisamos de um parâmetro no construtor, visto que a mensagem será genérica e igual para todos os erros de servidor.
+
+Dessa forma, podemos criar o nosso teste:
+```Typescript
+test('Should return 500 if EmailValidator throws', () => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      throw new Error();
+    }
+  }
+  const emailValidatorStub = new EmailValidatorStub();
+  const sut = new SignUpController(emailValidatorStub);
+
+  const httpRequest = {
+    body: {
+      name: 'any_name',
+      password: 'passhere',
+      passwordConfirmation: 'passhere',
+      email: 'email@mail.com',
+    },
+  };
+
+  const httpResponse = sut.handle(httpRequest);
+
+  expect(httpResponse.statusCode).toBe(500);
+  expect(httpResponse.body).toEqual(new ServerError());
+});
+```
+
+Agora, para garantir que o teste irá passar, o nosso controller ficará assim:
+```Typescript
+class SignUpController implements Controller {
+  private readonly emailValidator: EmailValidator;
+
+  constructor (emailValidator: EmailValidator) {
+    this.emailValidator = emailValidator;
+  }
+
+  handle (httpRequest: HttpRequest): HttpResponse {
+    try {
+      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation'];
+
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field));
+        }
+      }
+
+      const emailIsValid = this.emailValidator.isValid(httpRequest.body.email);
+
+      if (!emailIsValid) {
+        return badRequest(new InvalidParamError('email'));
+      }
+
+      return {
+        statusCode: 200,
+        body: {},
+      };
+    } catch (error) {
+      return serverError();
+    }
+  }
+}
+
+export { SignUpController };
+```
+
+Podemos fazer o commit com `git commit -m "feat:ensure SignUpController returns 500 if EmailValidator throws`.
