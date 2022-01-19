@@ -64,4 +64,17 @@ Agora, podemos ir lá embaixo, no teste `'Should return 500 if EmailValidator th
 const emailValidatorStub = makeEmailValidatorWithError();
 ```
 
+**Como alternativa, podemos também mockar a implementação de um método, para evitar precisar recriar várias vezes um factory sempre que for necessário simular um retorno diferente.**
+
+Para isso, removemos o médoto `makeEmailValidatorWithError` e utilizamos o `jest`:
+
+```Typescript
+const { sut, emailValidatorStub } = makeSut();
+
+jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+  throw new Error();
+});
+```
+
+
 Podemos commitar agora com `git c "refactor: move all protocols imports to a single file"`.
