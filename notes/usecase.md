@@ -197,4 +197,57 @@ password,
 return ok(account);
 ```
 
+---
+
+
 Com nossos testes rodando, podemos commitar agora!
+
+### Refatoranto métodos assíncronos
+
+Nossos Controllers irão estar se conectando com o Banco de Dados, podemos ter um delay durante essas conexões. Para isso, é sempre essencial manter os métodos de conexão como assíncronos.
+
+Vamos alterar o arquivo `./src/presentation/protocols/controller.ts`:
+```Typescript
+import { HttpRequest, HttpResponse } from './http';
+
+interface Controller {
+  handle (httpRequest: HttpRequest): Promise<HttpResponse>;
+}
+
+export { Controller };
+```
+
+Agora, podemos alterar o nosso `signup.ts`:
+```Typescript
+class SignUpController extends Controller {
+    async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+
+        //[...]
+        const account = await this.addAccount.add({
+        email,
+        name,
+        password,
+        });
+
+        return ok(account);
+    } catch (error) {
+        return serverError();
+    }
+    }
+}
+```
+
+Nossos testes agora precisarão ser assíncronos, e onde o método `handle` é chamado, precisamos utilizar o `await`. Também vamos alterar o método `add` em `add-account.ts` para assíncrono e refatorar o teste:
+```Typescript
+return await new Promise(resolve => resolve(fakeAccount));
+```
+
+E em nossa implementação do lançamento do erro no método `add`, também vamos alterar:
+```Typescript
+jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
+    return await new Promise((resolve, reject) => reject(new Error()));
+});
+```
+
+Podemos commitar a refatoração agora.
