@@ -35,8 +35,8 @@ const makeAddAccount = (): AddAccount => {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
-        email: 'valid_email@email.com',
-        password: 'valid_password',
+        password: 'valid_passhere',
+        email: 'valid_mail@mail.com',
       };
       return fakeAccount;
     }
@@ -135,4 +135,47 @@ expect(httpResponse.body).toEqual(new ServerError());
 });
 ```
 
-Como já temos um bloco de `try{}catch(e){}` no controller, o teste passará sem alterações no controller. Portanto, podemos commitar com `git c "test: ensure SignUpController returns 500 if AddAccount throws"` 
+Como já temos um bloco de `try{}catch(e){}` no controller, o teste passará sem alterações no controller. Portanto, podemos commitar com `git c "test: ensure SignUpController returns 500 if AddAccount throws"`.
+
+### Teste de sucesso!
+
+Podemos agora inserir o teste de sucesso para garantir que vamos ter o retorno esperado da conta criada com sucesso:
+```Typescript
+test('Should return 200 if valid data is provided', () => {
+const { sut } = makeSut();
+
+const httpRequest = {
+    body: {
+    name: 'valid_name',
+    password: 'valid_passhere',
+    passwordConfirmation: 'valid_passhere',
+    email: 'valid_mail@mail.com',
+    },
+};
+const httpResponse = sut.handle(httpRequest);
+
+expect(httpResponse.statusCode).toBe(200);
+expect(httpResponse.body).toEqual({
+    id: 'valid_id',
+    name: 'valid_name',
+    password: 'valid_passhere',
+    email: 'valid_mail@mail.com',
+});
+});
+```
+
+Com o nosso teste criado, esperando um `statusCode=200` e no `body` o a conta criada, podemos refatorar o trecho do nosso controller:
+```Typescript
+const account = this.addAccount.add({
+email,
+name,
+password,
+});
+
+return {
+statusCode: 200,
+body: account,
+};
+```
+
+Com nossos testes rodando, podemos commitar agora!
