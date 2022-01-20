@@ -107,3 +107,32 @@ Com os testes validados, podemos commitar (lembrando em TDD commitamos com dois 
 
 1. Com `git commit -m "feat: ensure SignUpController calls AddAccount with correct values"`
 2. Com apenas os arquivos de teste `git commit -m "test: ensure SignUpController calls AddAccount with correct values"`
+
+### Teste de exceção
+
+Podemos agora inserir o teste caso o método `add` lançasse algum erro:
+```Typescript
+test('Should return 500 if AddAccount throws', () => {
+const { sut, addAccountStub } = makeSut();
+
+jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => {
+    throw new Error();
+});
+
+const httpRequest = {
+    body: {
+    name: 'any_name',
+    password: 'passhere',
+    passwordConfirmation: 'passhere',
+    email: 'email@mail.com',
+    },
+};
+
+const httpResponse = sut.handle(httpRequest);
+
+expect(httpResponse.statusCode).toBe(500);
+expect(httpResponse.body).toEqual(new ServerError());
+});
+```
+
+Como já temos um bloco de `try{}catch(e){}` no controller, o teste passará sem alterações no controller. Portanto, podemos commitar com `git c "test: ensure SignUpController returns 500 if AddAccount throws"` 
