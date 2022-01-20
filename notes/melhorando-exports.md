@@ -27,6 +27,27 @@ Podemos commitar com `git commit -m "refactor: move all protocols imports to a s
 
 ---
 
+#### @EDIT
+
+Nesse momento, temos uma inconsistência na regra lógica do projeto: O EmailValidator não é um recurso genérico, a ser utilizado por outros controllers/protocolos, ele é específico do `SignUp`, portanto, não é coerente manter um arquivo com todas as importações dessa forma. Porém, se formos segmentando os imports, vamos voltar à estaca zero.
+
+Para melhorar esse workflow, vamos fazer um refactor no projeto e atribuir os protocolos do `SignUp` em um arquivo único e específico para esse serviço. Vamos criar uma pasta `./src/presentation/controllers/signup` e mover o nosso controller e o teste para lá.
+
+Agora, nessa mesma pasta, vamos criar um arquivo `signup-protocols.ts`:
+```Typescript
+export * from '../../protocols';
+export * from '../../protocols/email-validator';
+export * from '../../../domain/usecases/add-account';
+export * from '../../../domain/models/account';
+```
+
+**OBS: Alguns imports ainda não existem pois será adicionado futuramente durante as notas.**
+
+Podemos commitar agora com `git c "refactor: move all signup protocols to a single file"`
+
+
+---
+
 Vamos agora abstrair a criação de instâncias de classes de teste para factorys:
 ```Typescript
 const makeEmailValidator = (): EmailValidator => {
