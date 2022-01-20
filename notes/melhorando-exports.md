@@ -78,3 +78,5 @@ jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
 
 
 Podemos commitar agora com `git c "refactor: move all protocols imports to a single file"`.
+
+Próxima leitura: [useCase.md](./usecase.md)
