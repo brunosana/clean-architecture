@@ -178,4 +178,23 @@ body: account,
 };
 ```
 
+Vamos apenas refatorar esse retorno para o nosso `httpHelper`:
+```Typescript
+const ok = (data: any): HttpResponse => ({
+  statusCode: 200,
+  body: data,
+});
+```
+
+E substituindo no controller:
+```Typescript
+const account = this.addAccount.add({
+email,
+name,
+password,
+});
+
+return ok(account);
+```
+
 Com nossos testes rodando, podemos commitar agora!
