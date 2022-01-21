@@ -251,3 +251,5 @@ jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
 ```
 
 Podemos commitar a refatoração agora.
+
+Próxima Leitura: [jest.md](./jest.md).
