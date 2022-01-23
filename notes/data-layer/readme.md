@@ -88,3 +88,5 @@ class DbAddAccount implements AddAccount {
 
 export { DbAddAccount };
 ```
+
+Podemos validar as importações no arquivo de teste e commitar com `git commit -m "feat: ensure DbAddAccount calls Encrypter with correct password"` e `git commit -m "test: ensure DbAddAccount calls Encrypter with correct password"`.
