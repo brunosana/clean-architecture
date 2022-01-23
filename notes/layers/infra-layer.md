@@ -89,3 +89,12 @@ async encrypt (value: string): Promise<string> {
 ```
 
 Podemos commitar agora!
+
+
+---
+
+## Jest MongoDB
+
+Para que possamos utilizar testes no MongoDB com o Jest, vamos precisar de uma lib chamada [Jest Mongodb](https://www.npmjs.com/package/@shelf/jest-mongodb), além de, claro o [MongoDB](https://www.npmjs.com/package/mongodb) e os seus types
+
+Vamos seguir a documentação instalando a biblioteca, e em sequida, alterando o arquivo `jest.config.js` e criar o arquivo proposto com as configurações. Após isso é interessante commitar com `git c "chore: add jest configs for mongodb"`
