@@ -119,3 +119,111 @@ test('Should throw if Encrypter throws', async () => {
 4. Esperamos que a `Promise` não apenas seja rejeitada como também lance uma exceção.
 
 Podemos commitar agora com `git c "test: ensure DbAddAccount throws if Encrypter trhows"`.
+
+---
+
+#### Teste de integração com o repositório
+
+Para montar o teste de integração com o repositório, precisamos primeiro, da definição do repositório, que possui um método`add` e cadastra as informações no banco de dados.
+
+Vamos primeiro, montar o teste:
+```Typescript
+test('Should call AddAccountRepository with correct values', async () => {
+  const { sut, addAccountRepositoryStub } = makeSut();
+  const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
+  const accountData = {
+    name: 'valid_name',
+    email: 'valid_email',
+    password: 'valid_password',
+  };
+  await sut.add(accountData);
+  expect(addSpy).toHaveBeenCalledWith({
+    name: 'valid_name',
+    email: 'valid_email',
+    password: 'hashed_password',
+  });
+});
+```
+
+Perceba que agora, temos um `addAccountRepositoryStub` que possui um método `add` e verificamos se no caso de uso `db-add-account` ele é chamado com os valores corretos.
+
+Com essa alteração, precisamos modificar o nosso `makeSut`:
+```Typescript
+// [...]
+const makeAddAccountRepository = (): AddACcountRepository => {
+  class AddAccountRepositoryStub implements AddACcountRepository {
+    async add (accountData: AddAccountModel): Promise<AccountModel> {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'hashed_password',
+      };
+
+      return await new Promise(resolve => resolve(fakeAccount));
+    }
+  }
+  return new AddAccountRepositoryStub();
+};
+
+interface SutTypes {
+  sut: DbAddAccount;
+  encrypterStub: Encrypter;
+  addAccountRepositoryStub: AddACcountRepository;
+}
+const makeSut = (): SutTypes => {
+  const encrypterStub = makeEncrypter();
+  const addAccountRepositoryStub = makeAddAccountRepository();
+  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
+  return {
+    sut,
+    encrypterStub,
+    addAccountRepositoryStub,
+  };
+};
+```
+
+Precisamos agora definir a interface `AddACcountRepository` em `./src/data/protocols/add-account-repository.ts`:
+```Typescript
+import { AddAccountModel } from '../../domain/usecases/add-account';
+import { AccountModel } from '../../domain/models/account';
+
+interface AddACcountRepository {
+  add(accoundData: AddAccountModel): Promise<AccountModel>;
+}
+
+export { AddACcountRepository };
+```
+
+Com as interfaces e testes criados, podemos agora modificar o nosso caso de uso `db-add-account`:
+```Typescript
+import { AccountModel, AddAccount, AddAccountModel, AddACcountRepository, Encrypter } from './db-add-account-protocols';
+
+class DbAddAccount implements AddAccount {
+  private readonly encrypter: Encrypter;
+  private readonly addAccountRepository: AddACcountRepository;
+
+  constructor (encrypter: Encrypter, addAccountRepository: AddACcountRepository) {
+    this.encrypter = encrypter;
+    this.addAccountRepository = addAccountRepository;
+  }
+
+  async add (accountData: AddAccountModel): Promise<AccountModel> {
+    const hashedPassword = await this.encrypter.encrypt(accountData.password);
+
+    await this.addAccountRepository.add(Object.assign({}, accountData, { password: hashedPassword }));
+
+    const obj: AccountModel = {
+      email: '',
+      id: '',
+      name: '',
+      password: '',
+    };
+    return await new Promise(resolve => resolve(obj));
+  }
+}
+
+export { DbAddAccount };
+```
+
+Com as importações configuradas e os testes funcionando, podemos commitar!
