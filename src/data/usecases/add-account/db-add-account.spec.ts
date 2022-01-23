@@ -1,26 +1,43 @@
 import { DbAddAccount } from './db-add-account';
-import { Encrypter } from './db-add-account-protocols';
+import { AccountModel, AddAccountModel, AddACcountRepository, Encrypter } from './db-add-account-protocols';
 
-interface SutTypes {
-  sut: DbAddAccount;
-  encrypterStub: Encrypter;
-}
-
-const makeEncryptStub = (): Encrypter => {
+const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
     async encrypt (value: string): Promise<string> {
-      return await new Promise(resolve => resolve('hashed_value'));
+      return await new Promise(resolve => resolve('hashed_password'));
     }
   }
   return new EncrypterStub();
 };
+const makeAddAccountRepository = (): AddACcountRepository => {
+  class AddAccountRepositoryStub implements AddACcountRepository {
+    async add (accountData: AddAccountModel): Promise<AccountModel> {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'hashed_password',
+      };
 
+      return await new Promise(resolve => resolve(fakeAccount));
+    }
+  }
+  return new AddAccountRepositoryStub();
+};
+
+interface SutTypes {
+  sut: DbAddAccount;
+  encrypterStub: Encrypter;
+  addAccountRepositoryStub: AddACcountRepository;
+}
 const makeSut = (): SutTypes => {
-  const encrypterStub = makeEncryptStub();
-  const sut = new DbAddAccount(encrypterStub);
+  const encrypterStub = makeEncrypter();
+  const addAccountRepositoryStub = makeAddAccountRepository();
+  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
   return {
     sut,
     encrypterStub,
+    addAccountRepositoryStub,
   };
 };
 
@@ -49,5 +66,21 @@ describe('DbAddAccount Usecase', () => {
     };
     const promise = sut.add(accountData);
     await expect(promise).rejects.toThrow();
+  });
+
+  test('Should call AddAccountRepository with correct values', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut();
+    const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password',
+    };
+    await sut.add(accountData);
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password',
+    });
   });
 });
