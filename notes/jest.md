@@ -90,3 +90,5 @@ module.exports = {
 Estamos assim, excluindo os diretórios onde não temos arquivos de testes necessários para o coverage reports entrar em ação.
 
 Podemos commitar agora.
+
+Próxima Leitura: [Data Layer](./data-layer)
