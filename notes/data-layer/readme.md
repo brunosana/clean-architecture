@@ -90,3 +90,32 @@ export { DbAddAccount };
 ```
 
 Podemos validar as importações no arquivo de teste e commitar com `git commit -m "feat: ensure DbAddAccount calls Encrypter with correct password"` e `git commit -m "test: ensure DbAddAccount calls Encrypter with correct password"`.
+
+
+#### Teste de Exceção
+
+Esse classe será usada no Controller, ou seja, caso o método `encrypter` do **Encrypter** falhar e lançar uma exceção, ela não deve ser capturada, pois será tratada no controller.
+
+Vamos montar um teste para garantir que sempre que uma exceção ocorra no nosso **Encrypter** ela não seja capturada:
+```Typescript
+test('Should throw if Encrypter throws', async () => {
+  const { sut, encrypterStub } = makeSut();
+  jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(
+    new Promise((resolve, reject) => reject(new Error())),
+  );
+  const accountData = {
+    name: 'valid_name',
+    email: 'valid_email',
+    password: 'valid_password',
+  };
+  const promise = sut.add(accountData);
+  await expect(promise).rejects.toThrow();
+});
+```
+
+1. Não estamos mais espionando o método.
+2. Estamos fazendo um Mocking do seu retorno utilizando uma `Promise Rejects`.
+3. Não utilizamos mais o `await` para o método `add` e capturamos o seu retorno com uma variável, que nesse caso, sem o await, irá retornar uma `Promise`.
+4. Esperamos que a `Promise` não apenas seja rejeitada como também lance uma exceção.
+
+Podemos commitar agora com `git c "test: ensure DbAddAccount throws if Encrypter trhows"`.
