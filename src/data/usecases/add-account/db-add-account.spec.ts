@@ -1,5 +1,5 @@
 import { DbAddAccount } from './db-add-account';
-import { AccountModel, AddAccountModel, AddACcountRepository, Encrypter } from './db-add-account-protocols';
+import { AccountModel, AddAccountModel, AddAccountRepository, Encrypter } from './db-add-account-protocols';
 
 const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
@@ -9,8 +9,8 @@ const makeEncrypter = (): Encrypter => {
   }
   return new EncrypterStub();
 };
-const makeAddAccountRepository = (): AddACcountRepository => {
-  class AddAccountRepositoryStub implements AddACcountRepository {
+const makeAddAccountRepository = (): AddAccountRepository => {
+  class AddAccountRepositoryStub implements AddAccountRepository {
     async add (accountData: AddAccountModel): Promise<AccountModel> {
       const fakeAccount = {
         id: 'valid_id',
@@ -28,7 +28,7 @@ const makeAddAccountRepository = (): AddACcountRepository => {
 interface SutTypes {
   sut: DbAddAccount;
   encrypterStub: Encrypter;
-  addAccountRepositoryStub: AddACcountRepository;
+  addAccountRepositoryStub: AddAccountRepository;
 }
 const makeSut = (): SutTypes => {
   const encrypterStub = makeEncrypter();
