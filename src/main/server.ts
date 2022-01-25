@@ -1,5 +1,12 @@
-import { app } from './config/app';
+import { MongoHelper } from '../infra/db/mongodb/helpers/mongo-helper';
+import { env } from './config/env';
 
-app.listen(8080, () => {
-  console.log('Server started on port 8080...');
-});
+MongoHelper.connect(env.mongoUrl)
+  .then(async () => {
+    console.log('Database connected...');
+    const app = (await import('./config/app')).app;
+    app.listen(env.PORT, () => {
+      console.log('Server started on port 8080...');
+    });
+  })
+  .catch(console.error);
