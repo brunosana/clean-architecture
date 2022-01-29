@@ -75,6 +75,11 @@ Podemos utilizar um padrão de código, para garantir que a formatação ocorra 
 
 Essa lib é voltada para JS, para contornar esse problema, podemos usar o `ESLint` para configurar o StandardJS pelo [link do GitHub](https://github.com/standard/eslint-config-standard-with-typescript).
 
+```bash
+npm i -D eslint@^7.12.1 eslint-plugin-promise@^5.0.0  eslint-plugin-import@^2.22.1 eslint-plugin-node@^11.1.0   @typescript-eslint/eslint-plugin@^4.0.1   eslint-config-standard-with-typescript@latest
+```
+
+
 Depois de instaladas as libs, vamos criar um arquivo `.eslintrc.json`:
 ```JSON
 {
