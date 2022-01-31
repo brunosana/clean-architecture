@@ -26,7 +26,7 @@ _É interessante, no `editor`, inserimos a informação `--wait`, para informar 
 Para criar atalhos de comando no Git, vamos editar o arquivo de configurações com a flag `--global`:
 
 Inserir ao final do arquivo:
-```
+```bash
 [alias]
 	s = !git status -s
 	c = !git add --all && git commit -m
@@ -43,3 +43,27 @@ Inserir ao final do arquivo:
   * `cn` - Commiter Name, informa quem fez o commit
   * `cr` - Informa a data relativa do commit
   * `%C(<color name>)` - Determina a cor do trecho de mensagem posterior
+
+---
+
+### Utils
+
+1. Criar tags:
+```bash
+git tag "1.0" # Serve para marcações internas
+git -a tag "1.0" # Flag "-a" = anotated, para releases
+git -a tag "1.0.0" -m "1.0.0" # Flag "-m" = message
+```
+
+2. Para enviar as tags pelo push:
+```bash
+#Forma 1
+git push origin master --tags # Envia todas as tags que está registrada no git
+git push ogirin master --follow-tags # Envia as tags do tipo anotated
+```
+
+Podemos configurar as propriedades do git com `git config --global --edit`:
+```
+[alias]
+	p = !git push origin master --folow-tags
+```
